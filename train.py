@@ -67,13 +67,10 @@ def train(config=None, config_test=None):
                 A.IAAEmboss(),
                 A.RandomBrightnessContrast(),            
             ], p=0.3),
-            A.HueSaturationValue(p=0.3),
             M.MyToTensorV2(),
         ],
         additional_targets={
             'right_img': 'image',
-            'left_depth': 'depth',
-            'right_depth': 'depth',
             'left_normal': 'normal',
             'right_normal': 'normal',
         }
