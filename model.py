@@ -305,23 +305,10 @@ class Model(nn.Module):
         return norm
 
 
-class BerHuLoss(nn.Module):
-    def __init__(self, threshold=0.2):
-        super(BerHuLoss, self).__init__()
-        self.threshold = threshold
-    
-    def forward(self, predictions, targets):
-        h = (targets - predictions).abs()
-        g = self.threshold * torch.max(h)
-        
-        loss = torch.where(h <= g, h, h**2)
-        return loss.mean()
-
-
 class LossFunction(nn.Module):
     def __init__(self):
         super(LossFunction, self).__init__()
-        self.normal_loss = BerHuLoss()
+        self.normal_loss = nn.L1Loss()
 
         self.normal_loss_val = 0
 

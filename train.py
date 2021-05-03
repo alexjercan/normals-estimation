@@ -50,8 +50,6 @@ def train(config=None, config_test=None):
     transform = A.Compose(
         [
             M.MyRandomResizedCrop(width=config.IMAGE_SIZE, height=config.IMAGE_SIZE),
-            M.MyHorizontalFlip(p=0.5),
-            M.MyVerticalFlip(p=0.1),
             A.OneOf([
                 A.MotionBlur(p=0.2),
                 A.MedianBlur(blur_limit=3, p=0.1),
@@ -85,6 +83,9 @@ def train(config=None, config_test=None):
     solver = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), 
                               lr=config.LEARNING_RATE, betas=config.BETAS,
                               eps=config.EPS, weight_decay=config.WEIGHT_DECAY)
+    # solver = torch.optim.SGD(filter(lambda p: p.requires_grad, model.parameters()), 
+    #                           lr=config.LEARNING_RATE, momentum=config.MOMENTUM,
+    #                           dampening=config.DAMPENING, weight_decay=config.WEIGHT_DECAY)
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(solver, milestones=config.MILESTONES, gamma=config.GAMMA)
     model = model.to(DEVICE)
 
