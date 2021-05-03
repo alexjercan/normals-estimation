@@ -1,0 +1,3 @@
+JSON: [{"imageL": "data/left.png", "imageR": "data/right.png", "output": "data/output.exr"}]
+IMAGE_SIZE: 256
+CHECKPOINT_FILE: "normal.pth"
