@@ -156,6 +156,7 @@ if __name__ == "__main__":
     
     img_transform = A.Compose(
         [
+            A.Normalize(),
             M.MyToTensorV2(),
         ],
         additional_targets={
@@ -173,7 +174,8 @@ if __name__ == "__main__":
     assert left_normals.shape == (2, 3, 256, 256), f"dataset error {left_normals.shape}"
     
     dataset = LoadImages(JSON, transform=img_transform)
-    left_img, right_img, path = next(iter(dataset))
+    img, left_img, right_img, path = next(iter(dataset))
+    assert img.shape == (256, 256, 3), f"dataset error {img.shape}"
     assert left_img.shape == (3, 256, 256), f"dataset error {left_img.shape}"
     assert right_img.shape == (3, 256, 256), f"dataset error {right_img.shape}"
 

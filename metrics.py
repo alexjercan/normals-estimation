@@ -9,6 +9,7 @@
 
 from math import radians
 import torch
+import torch.nn.functional as F
 
 
 class MetricFunction():
@@ -38,6 +39,9 @@ class MetricFunction():
 def evaluate_error_normal(pred_normal, gt_normal):
     error = {}
     eps = 1e-7
+    
+    pred_normal = F.normalize(pred_normal, p=2, dim=1)
+    gt_normal = F.normalize(gt_normal, p=2, dim=1)
     
     dot_product = torch.mul(pred_normal, gt_normal).sum(dim=1)
     angular_error = torch.acos(torch.clamp(dot_product, -1+eps, 1-eps))

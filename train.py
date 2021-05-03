@@ -49,22 +49,22 @@ def train(config=None, config_test=None):
     
     transform = A.Compose(
         [
-            # M.MyRandomResizedCrop(width=config.IMAGE_SIZE, height=config.IMAGE_SIZE),
-            # A.OneOf([
-            #     A.MotionBlur(p=0.2),
-            #     A.MedianBlur(blur_limit=3, p=0.1),
-            #     A.Blur(blur_limit=3, p=0.1),
-            # ], p=0.2),
-            # A.OneOf([
-            #     M.MyOpticalDistortion(p=0.3),
-            #     M.MyGridDistortion(p=0.1),
-            #     M.MyIAAPiecewiseAffine(p=0.3),
-            # ], p=0.2),
-            # A.OneOf([
-            #     A.IAASharpen(),
-            #     A.IAAEmboss(),
-            #     A.RandomBrightnessContrast(),            
-            # ], p=0.3),
+            M.MyRandomResizedCrop(width=config.IMAGE_SIZE, height=config.IMAGE_SIZE),
+            A.OneOf([
+                A.MotionBlur(p=0.2),
+                A.MedianBlur(blur_limit=3, p=0.1),
+                A.Blur(blur_limit=3, p=0.1),
+            ], p=0.2),
+            A.OneOf([
+                M.MyOpticalDistortion(p=0.3),
+                M.MyGridDistortion(p=0.1),
+                M.MyIAAPiecewiseAffine(p=0.3),
+            ], p=0.2),
+            A.OneOf([
+                A.IAASharpen(),
+                A.IAAEmboss(),
+                A.RandomBrightnessContrast(),            
+            ], p=0.3),
             A.Normalize(),
             M.MyToTensorV2(),
         ],

@@ -7,7 +7,6 @@
 
 import os
 import cv2
-import numpy as np
 import matplotlib.pyplot as plt
 
 from pathlib import Path
@@ -48,7 +47,6 @@ def plot_predictions(images, predictions, paths):
     normal_ps = (normal_ps.cpu().numpy() + 1) / 2
 
     for img, normal_p, path in zip(images, normal_ps, paths):
-        # img = img.transpose(1, 2, 0)
         normal = normal_p.transpose(1, 2, 0)
         
         fig, (ax1, ax2) = plt.subplots(1, 2)
