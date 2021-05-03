@@ -37,10 +37,10 @@ class MetricFunction():
 
 def evaluate_error_normal(pred_normal, gt_normal):
     error = {}
+    eps = 1e-7
     
     dot_product = torch.mul(pred_normal, gt_normal).sum(dim=1)
-    angular_error = torch.acos(torch.minimum(torch.tensor(1, device=pred_normal.device), 
-                                             torch.maximum(torch.tensor(-1, device=pred_normal.device), dot_product)))
+    angular_error = torch.acos(torch.clamp(dot_product, -1+eps, 1-eps))
 
     error['N_MSE'] = torch.mean(torch.mul(angular_error, angular_error))
     error['N_RMSE'] = torch.sqrt(error['N_MSE'])

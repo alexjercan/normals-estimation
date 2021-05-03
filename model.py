@@ -315,8 +315,13 @@ class LossFunction(nn.Module):
     def forward(self, predictions, targets):
         normal_p = predictions
         normal_gt = targets
-                
-        normal = self.normal_loss(normal_p, normal_gt) * 1.0
+        eps = 1e-7
+        
+        dot_product = torch.mul(normal_p, normal_gt).sum(dim=1)
+        angular_error = torch.acos(torch.clamp(dot_product, -1+eps, 1-eps))
+        normal = torch.mean(torch.mul(angular_error, angular_error))
+            
+        normal = normal * 1.0 + self.normal_loss(normal_p, normal_gt) * 1.0
         self.normal_loss_val = normal.item()
 
         return normal

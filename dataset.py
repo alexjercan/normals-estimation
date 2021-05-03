@@ -7,6 +7,7 @@
 
 import os
 import json
+from copy import copy
 
 from torch.utils.data import Dataset, DataLoader
 from util import load_image, load_normal
@@ -100,6 +101,7 @@ class LoadImages():
     
     def __transform__(self, data):
         left_img, right_img, output_path = data
+        img = copy(left_img)
         
         if self.transform is not None:
             augmentations = self.transform(image=left_img, right_img=right_img)
@@ -107,7 +109,7 @@ class LoadImages():
             left_img = augmentations["image"]
             right_img = augmentations["right_img"]
         
-        return left_img, right_img, output_path
+        return img, left_img, right_img, output_path
 
 
 if __name__ == "__main__":    
@@ -142,7 +144,7 @@ if __name__ == "__main__":
                 A.IAAEmboss(),
                 A.RandomBrightnessContrast(),            
             ], p=0.3),
-            A.HueSaturationValue(p=0.3),
+            A.Normalize(),
             M.MyToTensorV2(),
         ],
         additional_targets={

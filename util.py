@@ -30,10 +30,6 @@ def img2rgb(path):
         return None
 
     img = cv2.imread(path)
-
-    img = img / 255
-
-    img = np.array(img).astype(np.float32)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     return img
@@ -43,37 +39,29 @@ def exr2normal(path):
     if not os.path.isfile(path):
         return None
 
-    img = cv2.imread(path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
-
-    img[img > 1] = 1
-    img[img < 0] = 0
-    
-    img = np.array(img).astype(np.float32).reshape(img.shape[0], img.shape[1], -1)
-
-    return img
+    return cv2.imread(path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH) * 2 - 1
 
 
 def plot_predictions(images, predictions, paths):
-    left_images, _ = images
     normal_ps = predictions
-    left_images = left_images.cpu().numpy()
-    normal_ps = normal_ps.cpu().numpy()
 
-    for left_img, normal_p, path in zip(left_images, normal_ps, paths):
-        left_img = left_img.transpose(1, 2, 0)
+    normal_ps = (normal_ps.cpu().numpy() + 1) / 2
+
+    for img, normal_p, path in zip(images, normal_ps, paths):
+        # img = img.transpose(1, 2, 0)
         normal = normal_p.transpose(1, 2, 0)
         
         fig, (ax1, ax2) = plt.subplots(1, 2)
         fig.suptitle(path)
         ax1.axis('off')
-        ax1.imshow(left_img)
+        ax1.imshow(img)
         ax2.axis('off')
         ax2.imshow(normal)
         plt.show()
 
 def save_predictions(predictions, paths):
     normal_ps = predictions
-    normal_ps = normal_ps.cpu().numpy()
+    normal_ps = (normal_ps.cpu().numpy() + 1) / 2
 
     for normal_p, path in zip(normal_ps, paths):
         normal = normal_p.transpose(1, 2, 0)
