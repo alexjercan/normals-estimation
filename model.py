@@ -158,7 +158,7 @@ class LossFunction(nn.Module):
         normal_p_n = F.normalize(normal_p, p=2, dim=1)
         normal_gt_n = F.normalize(normal_gt, p=2, dim=1)
 
-        cos_loss = self.cos_loss(normal_p_n, normal_gt_n, torch.tensor(1.0)) * 1.0
+        cos_loss = self.cos_loss(normal_p_n, normal_gt_n, torch.tensor(1.0, device=normal_p.device)) * 1.0
         normal_loss = self.normal_loss(normal_p, normal_gt) * 1.0
 
         self.cos_loss_val = cos_loss.item()
