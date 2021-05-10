@@ -54,9 +54,9 @@ class BDataset(Dataset):
 
     def __transform__(self, data):
         left_img, right_img, left_normal, right_normal = data
-        
+
         if self.transform is not None:
-            augmentations = self.transform(image=left_img, right_img=right_img, 
+            augmentations = self.transform(image=left_img, right_img=right_img,
                                            left_normal=left_normal, right_normal=right_normal)
             left_img = augmentations["image"]
             right_img = augmentations["right_img"]
@@ -70,25 +70,25 @@ class LoadImages():
         self.json_data = json_data
         self.transform = transform
         self.count = 0
-        
+
     def __len__(self):
         return len(self.json_data)
-        
+
     def __iter__(self):
         self.count = 0
         return self
-    
+
     def __next__(self):
         index = self.count
-        
+
         if self.count == self.__len__():
             raise StopIteration
         self.count += 1
-        
+
         data = self.__load__(index)
         data =  self.__transform__(data)
         return data
-        
+
     def __load__(self, index):
         left_img_path = self.json_data[index]["imageL"]
         right_img_path = self.json_data[index]["imageR"]
@@ -98,26 +98,26 @@ class LoadImages():
         right_img = load_image(right_img_path)
 
         return left_img, right_img, output_img_path
-    
+
     def __transform__(self, data):
         left_img, right_img, output_path = data
         img = copy(left_img)
-        
+
         if self.transform is not None:
             augmentations = self.transform(image=left_img, right_img=right_img)
 
             left_img = augmentations["image"]
             right_img = augmentations["right_img"]
-        
+
         return img, left_img, right_img, output_path
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     from config import JSON, IMAGE_SIZE
     import albumentations as A
     import my_albumentations as M
     import matplotlib.pyplot as plt
-    
+
     def visualize(image):
         plt.figure(figsize=(10, 10))
         plt.axis('off')
@@ -137,12 +137,11 @@ if __name__ == "__main__":
             A.OneOf([
                 M.MyOpticalDistortion(p=0.3),
                 M.MyGridDistortion(p=0.1),
-                M.MyIAAPiecewiseAffine(p=0.3),
             ], p=0.2),
             A.OneOf([
                 A.IAASharpen(),
                 A.IAAEmboss(),
-                A.RandomBrightnessContrast(),            
+                A.RandomBrightnessContrast(),
             ], p=0.3),
             A.Normalize(),
             M.MyToTensorV2(),
@@ -153,7 +152,7 @@ if __name__ == "__main__":
             'right_normal': 'normal',
         }
     )
-    
+
     img_transform = A.Compose(
         [
             A.Normalize(),
@@ -172,7 +171,7 @@ if __name__ == "__main__":
     assert right_normals.shape == left_normals.shape, "dataset error"
     assert left_imgs.shape == (2, 3, 256, 256), f"dataset error {left_imgs.shape}"
     assert left_normals.shape == (2, 3, 256, 256), f"dataset error {left_normals.shape}"
-    
+
     dataset = LoadImages(JSON, transform=img_transform)
     img, left_img, right_img, path = next(iter(dataset))
     assert img.shape == (256, 256, 3), f"dataset error {img.shape}"
