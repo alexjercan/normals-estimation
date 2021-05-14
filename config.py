@@ -35,7 +35,7 @@ LOAD_MODEL = False
 SAVE_MODEL = True
 CHECKPOINT_FILE = "normal.pth"
 
-JSON = [{"imageL": "data/left.png", "imageR": "data/right.png", "output": "data/output.exr"}]
+JSON = [{"imageL": "data/0000L.png", "imageR": "data/0000R.png", "output": "data/out/0000.exr"}]
 
 
 def parse_train_config(config=None):
@@ -56,12 +56,12 @@ def parse_train_config(config=None):
     c.BETAS = config.get("BETAS", BETAS)
     c.EPS = config.get("EPS", EPS)
     c.WEIGHT_DECAY = config.get("WEIGHT_DECAY", WEIGHT_DECAY)
-    
+
     c.MILESTONES = config.get("MILESTONES", MILESTONES)
     c.GAMMA = config.get("GAMMA", GAMMA)
 
     c.NUM_EPOCHS = config.get("NUM_EPOCHS", NUM_EPOCHS)
-    c.TEST = config.get("TEST", TEST) 
+    c.TEST = config.get("TEST", TEST)
     c.OUT_PATH = config.get("OUT_PATH", OUT_PATH)
     c.LOAD_MODEL = config.get("LOAD_MODEL", LOAD_MODEL)
     c.SAVE_MODEL = config.get("SAVE_MODEL", SAVE_MODEL)
@@ -96,7 +96,7 @@ def parse_detect_config(config=None):
     c.JSON = config.get("JSON", JSON)
     c.IMAGE_SIZE = config.get("IMAGE_SIZE", IMAGE_SIZE)
     c.CHECKPOINT_FILE = config.get("CHECKPOINT_FILE", CHECKPOINT_FILE)
-    
+
     return c
 
 
