@@ -48,7 +48,7 @@ def plot_predictions(images, predictions, paths):
 
     for img, normal_p, path in zip(images, normal_ps, paths):
         normal = normal_p.transpose(1, 2, 0)
-        
+
         fig, (ax1, ax2) = plt.subplots(1, 2)
         fig.suptitle(path)
         ax1.axis('off')
@@ -67,7 +67,8 @@ def save_predictions(predictions, paths):
         normal_path = str(Path(path).with_suffix(".exr"))
 
         cv2.imwrite(normal_path, normal)
-        
+
         plt.axis('off')
         plt.imshow(normal)
         plt.savefig(str(Path(path).with_suffix(".png")))
+        plt.close()

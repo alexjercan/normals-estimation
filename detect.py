@@ -5,10 +5,11 @@
 # References:
 #
 
-from albumentations.pytorch.transforms import ToTensorV2
+import cv2
 import torch
 import argparse
 import albumentations as A
+import my_albumentations as M
 
 from config import parse_detect_config, DEVICE, read_yaml_config
 from model import Model
@@ -34,9 +35,10 @@ def detect(model=None, config=None):
 
     transform = A.Compose(
         [
-            A.Resize(height=config.IMAGE_SIZE, width=config.IMAGE_SIZE),
+            A.LongestMaxSize(max_size=config.IMAGE_SIZE),
+            A.PadIfNeeded(min_height=config.IMAGE_SIZE, min_width=config.IMAGE_SIZE, border_mode=cv2.BORDER_CONSTANT, value=0),
             A.Normalize(),
-            ToTensorV2(),
+            M.MyToTensorV2(),
         ],
         additional_targets={
             'right_img': 'image',
@@ -62,5 +64,5 @@ if __name__ == "__main__":
     opt = parser.parse_args()
 
     config_detect = parse_detect_config(read_yaml_config(opt.detect))
-    
+
     detect(config=config_detect)
