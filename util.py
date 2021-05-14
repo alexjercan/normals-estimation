@@ -42,6 +42,9 @@ def exr2normal(path):
 
 
 def plot_predictions(images, predictions, paths):
+    plt.rcParams['figure.figsize'] = [12, 8]
+    plt.rcParams['figure.dpi'] = 200
+
     normal_ps = predictions
 
     normal_ps = (normal_ps.cpu().numpy() + 1) / 2
@@ -58,6 +61,9 @@ def plot_predictions(images, predictions, paths):
         plt.show()
 
 def save_predictions(predictions, paths):
+    plt.rcParams['figure.figsize'] = [12, 8]
+    plt.rcParams['figure.dpi'] = 200
+
     normal_ps = predictions
     normal_ps = (normal_ps.cpu().numpy() + 1) / 2
 
