@@ -143,10 +143,13 @@ class Model(nn.Module):
 
 
 class LossFunction(nn.Module):
-    def __init__(self):
+    def __init__(self, alpha=1.0, beta=1.0):
         super(LossFunction, self).__init__()
         self.normal_loss = nn.L1Loss()
         self.cos_loss = nn.CosineEmbeddingLoss()
+
+        self.alpha = alpha
+        self.beta = beta
 
         self.normal_loss_val = 0
         self.cos_loss_val = 0
@@ -158,13 +161,13 @@ class LossFunction(nn.Module):
         normal_p_n = F.normalize(normal_p, p=2, dim=1)
         normal_gt_n = F.normalize(normal_gt, p=2, dim=1)
 
-        cos_loss = self.cos_loss(normal_p_n, normal_gt_n, torch.tensor(1.0, device=normal_p.device)) * 9.0
-        normal_loss = self.normal_loss(normal_p, normal_gt) * 1.0
+        normal_loss = self.normal_loss(normal_p, normal_gt) * self.alpha
+        cos_loss = self.cos_loss(normal_p_n, normal_gt_n, torch.tensor(1.0, device=normal_p.device)) * self.beta
 
-        self.cos_loss_val = cos_loss.item()
         self.normal_loss_val = normal_loss.item()
+        self.cos_loss_val = cos_loss.item()
 
-        normal = cos_loss + normal_loss
+        normal = normal_loss + cos_loss
 
         return normal
 
