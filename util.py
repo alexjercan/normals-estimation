@@ -7,6 +7,7 @@
 
 import os
 import cv2
+import albumentations as A
 import matplotlib.pyplot as plt
 
 from pathlib import Path
@@ -51,6 +52,9 @@ def plot_predictions(images, predictions, paths):
 
     for img, normal_p, path in zip(images, normal_ps, paths):
         normal = normal_p.transpose(1, 2, 0)
+        m = max(img.shape[:-1])
+        normal = A.resize(normal, width=m, height=m, interpolation=cv2.INTER_NEAREST)
+        normal = A.center_crop(normal, *img.shape[:-1])
 
         fig, (ax1, ax2) = plt.subplots(1, 2)
         fig.suptitle(path)
@@ -60,15 +64,18 @@ def plot_predictions(images, predictions, paths):
         ax2.imshow(normal)
         plt.show()
 
-def save_predictions(predictions, paths):
+def save_predictions(images, predictions, paths):
     plt.rcParams['figure.figsize'] = [12, 8]
     plt.rcParams['figure.dpi'] = 200
 
     normal_ps = predictions
     normal_ps = (normal_ps.cpu().numpy() + 1) / 2
 
-    for normal_p, path in zip(normal_ps, paths):
+    for img, normal_p, path in zip(images, normal_ps, paths):
         normal = normal_p.transpose(1, 2, 0)
+        m = max(img.shape[:-1])
+        normal = A.resize(normal, width=m, height=m, interpolation=cv2.INTER_NEAREST)
+        normal = A.center_crop(normal, *img.shape[:-1])
 
         normal_path = str(Path(path).with_suffix(".exr"))
 
